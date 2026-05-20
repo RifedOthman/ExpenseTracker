@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpenseTrackerApp.Pages.FinancePage"
+             Title="Validation finance">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="16">
+        <Label x:Name="WelcomeLabel"
+               Grid.Row="0"
+               FontSize="16"
+               Text="Dépenses en attente (SUBMITTED)" />
+
+        <RefreshView x:Name="ExpensesRefresh"
+                     Grid.Row="1"
+                     Refreshing="OnRefreshing">
+            <CollectionView x:Name="ExpensesCollection"
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="Aucune dépense en attente" HorizontalOptions="Center" Margin="20" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="12" Margin="0,6" Stroke="#DDDDDD">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding AmountDisplay}" FontAttributes="Bold" />
+                                <Label Text="{Binding Category}" />
+                                <Label Text="{Binding Description}" />
+                                <Label Text="{Binding UserEmail}" TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Button Text="Approuver"
+                                            BackgroundColor="Green"
+                                            TextColor="White"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnApproveClicked" />
+                                    <Button Text="Rejeter"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnRejectClicked" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="2"
+                Text="Déconnexion"
+                Margin="0,12,0,0"
+                Clicked="OnLogoutClicked" />
+
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           Grid.Row="1"
+                           IsRunning="False"
+                           IsVisible="False"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

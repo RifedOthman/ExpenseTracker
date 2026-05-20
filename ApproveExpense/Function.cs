@@ -6,7 +6,7 @@ using System.Text.Json;
  
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
  
-namespace RejectExpense;
+namespace ApproveExpense;
  
 public class Function
 {
@@ -23,29 +23,27 @@ public class Function
     {
         try
         {
-            // ── 1. RBAC : seul finance peut rejeter ───────────────────
             var claims = request.RequestContext.Authorizer.Claims;
             var groups = claims.ContainsKey("cognito:groups")
                 ? claims["cognito:groups"] : "";
  
             if (!groups.Contains("finance"))
-                return Error(403, "Only finance managers can reject expenses");
+                return Error(403, "Only finance managers can approve expenses");
  
             var managerId    = claims["sub"];
             var managerEmail = claims.ContainsKey("email") ? claims["email"] : "";
  
-            // ── 2. Lire expenseId + justification ─────────────────────
             var expenseId = request.PathParameters?["expenseId"];
             if (string.IsNullOrEmpty(expenseId))
                 return Error(400, "expenseId is required");
  
-            var body = JsonSerializer.Deserialize<RejectRequest>(
-                request.Body ?? "{}");
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var body = JsonSerializer.Deserialize<ApproveRequest>(
+                request.Body ?? "{}", options);
  
             if (string.IsNullOrEmpty(body?.Justification))
                 return Error(400, "Justification is required");
  
-            // ── 3. Récupérer la dépense ────────────────────────────────
             var scanRequest = new ScanRequest
             {
                 TableName        = TABLE,
@@ -65,13 +63,11 @@ public class Function
             var sk            = item["SK"].S;
             var currentStatus = item["status"].S;
  
-            // ── 4. STATE MACHINE : SUBMITTED → REJECTED uniquement ────
             if (currentStatus != "SUBMITTED")
                 return Error(400,
-                    $"Cannot reject expense with status '{currentStatus}'. " +
-                    "Only SUBMITTED expenses can be rejected.");
+                    $"Cannot approve expense with status '{currentStatus}'. " +
+                    "Only SUBMITTED expenses can be approved.");
  
-            // ── 5. Mettre à jour DynamoDB ──────────────────────────────
             var now = DateTime.UtcNow.ToString("o");
  
             await _dynamo.UpdateItemAsync(new UpdateItemRequest
@@ -91,7 +87,7 @@ public class Function
                 },
                 ExpressionAttributeValues = new Dictionary<string, AttributeValue>
                 {
-                    [":newStatus"]     = new AttributeValue { S = "REJECTED" },
+                    [":newStatus"]     = new AttributeValue { S = "APPROVED" },
                     [":now"]           = new AttributeValue { S = now },
                     [":just"]          = new AttributeValue { S = body.Justification },
                     [":mid"]           = new AttributeValue { S = managerId },
@@ -105,11 +101,11 @@ public class Function
             {
                 expenseId,
                 previousStatus = "SUBMITTED",
-                newStatus      = "REJECTED",
+                newStatus      = "APPROVED",
                 justification  = body.Justification,
                 managerId,
                 updatedAt      = now,
-                message        = "Expense rejected. Employee can resubmit after correction."
+                message        = "Expense approved successfully"
             });
         }
         catch (ConditionalCheckFailedException)
@@ -123,7 +119,6 @@ public class Function
         }
     }
  
-    // ── Helpers ────────────────────────────────────────────────────────
     private static APIGatewayProxyResponse Ok(int statusCode, object body) =>
         new APIGatewayProxyResponse
         {
@@ -149,8 +144,8 @@ public class Function
         };
 }
  
-// ── DTO ───────────────────────────────────────────────────────────────
-public class RejectRequest
+public class ApproveRequest
 {
     public string Justification { get; set; } = "";
 }
+ 

@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Windows Machine": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  },
+  "platforms": {
+    "x64": {
+      "commandName": "Project"
+    }
+  }
+}

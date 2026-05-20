@@ -1,9 +1,0 @@
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\RejectExpense.deps.json
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\RejectExpense.runtimeconfig.json
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\RejectExpense.pdb
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\Amazon.Lambda.APIGatewayEvents.dll
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\Amazon.Lambda.Core.dll
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\Amazon.Lambda.Serialization.SystemTextJson.dll
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\AWSSDK.Core.dll
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\AWSSDK.DynamoDBv2.dll
-C:\Users\rifed\projects\ExpenseTracker\RejectExpense\bin\Release\net10.0\publish\RejectExpense.dll

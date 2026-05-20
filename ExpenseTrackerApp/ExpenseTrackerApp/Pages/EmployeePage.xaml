@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ExpenseTrackerApp.Pages.EmployeePage"
+             Title="Mes dépenses">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Label x:Name="WelcomeLabel" FontSize="16" />
+            <Button Text="Nouvelle dépense" Clicked="OnNewExpenseClicked" />
+        </VerticalStackLayout>
+
+        <Border x:Name="FormPanel"
+                Grid.Row="1"
+                IsVisible="False"
+                Stroke="#CCCCCC"
+                Padding="12"
+                Margin="0,8">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Nouvelle dépense" FontAttributes="Bold" />
+                <Entry x:Name="AmountEntry" Placeholder="Montant" Keyboard="Numeric" />
+                <Picker x:Name="CategoryPicker" Title="Catégorie" />
+                <Entry x:Name="DescriptionEntry" Placeholder="Description" />
+                <HorizontalStackLayout Spacing="8">
+                    <Button Text="Créer" Clicked="OnCreateExpenseClicked" />
+                    <Button Text="Annuler" Clicked="OnCancelFormClicked" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Border>
+
+        <RefreshView x:Name="ExpensesRefresh"
+                     Grid.Row="2"
+                     Refreshing="OnRefreshing">
+            <CollectionView x:Name="ExpensesCollection"
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="Aucune dépense" HorizontalOptions="Center" Margin="20" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="12" Margin="0,6" Stroke="#DDDDDD">
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="{Binding StatusDisplay}"
+                                       FontAttributes="Bold"
+                                       TextColor="{Binding StatusColor}" />
+                                <Label Text="{Binding AmountDisplay}" />
+                                <Label Text="{Binding Category}" />
+                                <Label Text="{Binding Description}" />
+                                <Label Text="{Binding CreatedAt}" FontSize="12" TextColor="Gray" />
+                                <HorizontalStackLayout Spacing="8">
+                                    <Button Text="Soumettre"
+                                            IsVisible="{Binding CanSubmit}"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnSubmitClicked" />
+                                    <Button Text="Voir reçu"
+                                            IsVisible="{Binding HasReceipt}"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnViewReceiptClicked" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="3"
+                Text="Déconnexion"
+                Margin="0,12,0,0"
+                Clicked="OnLogoutClicked" />
+
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           Grid.Row="2"
+                           IsRunning="False"
+                           IsVisible="False"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
+</ContentPage>

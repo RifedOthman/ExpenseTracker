@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="ExpenseTrackerApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:ExpenseTrackerApp.Pages"
+    FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="True">
+
+    <ShellContent
+        Title="Connexion"
+        Route="login"
+        ContentTemplate="{DataTemplate pages:LoginPage}" />
+
+    <ShellContent
+        Title="Employé"
+        Route="employee"
+        ContentTemplate="{DataTemplate pages:EmployeePage}" />
+
+    <ShellContent
+        Title="Finance"
+        Route="finance"
+        ContentTemplate="{DataTemplate pages:FinancePage}" />
+
+</Shell>
