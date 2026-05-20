@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "HDCz6a0vDs8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\rifed\\projects\\ExpenseTracker\\ApproveExpense\\ApproveExpense.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rifed\\.nuget\\packages\\amazon.lambda.apigatewayevents\\3.0.0\\amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\amazon.lambda.core\\3.1.0\\amazon.lambda.core.3.1.0.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\amazon.lambda.serialization.systemtextjson\\2.4.5\\amazon.lambda.serialization.systemtextjson.2.4.5.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\awssdk.core\\4.0.7.1\\awssdk.core.4.0.7.1.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\awssdk.dynamodbv2\\4.0.18.4\\awssdk.dynamodbv2.4.0.18.4.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\10.0.8\\microsoft.netcore.app.runtime.linux-x64.10.0.8.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\10.0.8\\microsoft.aspnetcore.app.runtime.linux-x64.10.0.8.nupkg.sha512",
+    "C:\\Users\\rifed\\.nuget\\packages\\microsoft.netcore.app.crossgen2.win-x64\\10.0.8\\microsoft.netcore.app.crossgen2.win-x64.10.0.8.nupkg.sha512"
+  ],
+  "logs": []
+}
