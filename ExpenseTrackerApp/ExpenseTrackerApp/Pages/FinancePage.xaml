@@ -37,6 +37,9 @@
                                             TextColor="White"
                                             CommandParameter="{Binding ExpenseId}"
                                             Clicked="OnRejectClicked" />
+                                    <Button Text="Voir reçu"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnViewReceiptClicked" />
                                 </HorizontalStackLayout>
                             </VerticalStackLayout>
                         </Border>

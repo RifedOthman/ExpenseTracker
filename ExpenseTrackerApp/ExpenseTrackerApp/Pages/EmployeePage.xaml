@@ -52,6 +52,10 @@
                                             IsVisible="{Binding CanSubmit}"
                                             CommandParameter="{Binding ExpenseId}"
                                             Clicked="OnSubmitClicked" />
+                                    <Button Text="Joindre reçu"
+                                            IsVisible="{Binding CanAttachReceipt}"
+                                            CommandParameter="{Binding ExpenseId}"
+                                            Clicked="OnAttachReceiptClicked" />
                                     <Button Text="Voir reçu"
                                             IsVisible="{Binding HasReceipt}"
                                             CommandParameter="{Binding ExpenseId}"

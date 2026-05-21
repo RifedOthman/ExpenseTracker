@@ -1,4 +1,4 @@
-﻿namespace ExpenseTrackerApp;
+namespace ExpenseTrackerApp;
 
 public partial class AppShell : Shell
 {

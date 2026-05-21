@@ -1,4 +1,4 @@
-﻿using ExpenseTrackerApp.Services;
+using ExpenseTrackerApp.Services;
 using Microsoft.Extensions.Logging;
 
 namespace ExpenseTrackerApp;

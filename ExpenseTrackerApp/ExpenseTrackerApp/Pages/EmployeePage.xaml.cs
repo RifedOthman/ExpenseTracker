@@ -13,6 +13,15 @@ public partial class EmployeePage : ContentPage
         "Transport", "Repas", "Hébergement", "Equipement", "Autre"
     };
 
+    private static readonly FilePickerFileType ReceiptImageTypes = new(
+        new Dictionary<DevicePlatform, IEnumerable<string>>
+        {
+            { DevicePlatform.WinUI, new[] { ".jpg", ".jpeg", ".png" } },
+            { DevicePlatform.Android, new[] { "image/jpeg", "image/png" } },
+            { DevicePlatform.iOS, new[] { "public.jpeg", "public.png" } },
+            { DevicePlatform.MacCatalyst, new[] { "public.jpeg", "public.png" } }
+        });
+
     public EmployeePage()
     {
         InitializeComponent();
@@ -121,6 +130,41 @@ public partial class EmployeePage : ContentPage
         }
     }
 
+    private async void OnAttachReceiptClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button || button.CommandParameter is not string expenseId)
+            return;
+
+        try
+        {
+            var file = await FilePicker.Default.PickAsync(new PickOptions
+            {
+                PickerTitle = "Choisir un reçu (JPG ou PNG)",
+                FileTypes = ReceiptImageTypes
+            });
+
+            if (file == null)
+                return;
+
+            SetLoading(true);
+
+            var presignedUrl = await _apiService.GetReceiptUploadUrlAsync(expenseId);
+            await using var stream = await file.OpenReadAsync();
+            await _apiService.UploadReceiptToS3Async(presignedUrl, stream);
+
+            await LoadExpensesAsync();
+            await DisplayAlert("Succès", "Reçu uploadé avec succès !", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erreur", ex.Message, "OK");
+        }
+        finally
+        {
+            SetLoading(false);
+        }
+    }
+
     private async void OnViewReceiptClicked(object sender, EventArgs e)
     {
         if (sender is not Button button || button.CommandParameter is not string expenseId)
@@ -171,6 +215,7 @@ public partial class EmployeePage : ContentPage
             StatusDisplay = expense.Status;
             StatusColor = GetStatusColor(expense.Status);
             CanSubmit = expense.Status is "DRAFT" or "REJECTED";
+            CanAttachReceipt = expense.Status == "DRAFT";
             HasReceipt = !string.IsNullOrEmpty(expense.ReceiptKey);
         }
 
@@ -182,6 +227,7 @@ public partial class EmployeePage : ContentPage
         public string StatusDisplay { get; }
         public Color StatusColor { get; }
         public bool CanSubmit { get; }
+        public bool CanAttachReceipt { get; }
         public bool HasReceipt { get; }
 
         private static Color GetStatusColor(string status) => status switch

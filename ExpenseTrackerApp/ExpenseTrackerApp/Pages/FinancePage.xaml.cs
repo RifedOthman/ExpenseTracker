@@ -102,6 +102,27 @@ public partial class FinancePage : ContentPage
         }
     }
 
+    private async void OnViewReceiptClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button button || button.CommandParameter is not string expenseId)
+            return;
+
+        try
+        {
+            SetLoading(true);
+            var presignedUrl = await _apiService.GetReceiptUrlAsync(expenseId);
+            await Launcher.Default.OpenAsync(new Uri(presignedUrl));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erreur", ex.Message, "OK");
+        }
+        finally
+        {
+            SetLoading(false);
+        }
+    }
+
     private async void OnRefreshing(object? sender, EventArgs e)
     {
         await LoadExpensesAsync();

@@ -75,18 +75,39 @@ public class ApiService
         await PostJustificationAsync($"expenses/{expenseId}/reject", justification);
     }
 
-    public async Task<string> GetReceiptUrlAsync(string expenseId)
+    public Task<string> GetReceiptUrlAsync(string expenseId) =>
+        GetPresignedReceiptUrlAsync(expenseId, "download");
+
+    public Task<string> GetReceiptUploadUrlAsync(string expenseId) =>
+        GetPresignedReceiptUrlAsync(expenseId, "upload");
+
+    public async Task UploadReceiptToS3Async(string presignedUrl, Stream fileStream)
+    {
+        using var uploadClient = new HttpClient();
+        using var content = new StreamContent(fileStream);
+        content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+
+        using var response = await uploadClient.PutAsync(presignedUrl, content);
+        if (!response.IsSuccessStatusCode)
+        {
+            var body = await response.Content.ReadAsStringAsync();
+            throw new InvalidOperationException(
+                $"Échec de l'upload S3 ({(int)response.StatusCode}) : {body}");
+        }
+    }
+
+    private async Task<string> GetPresignedReceiptUrlAsync(string expenseId, string action)
     {
         using var request = CreateRequest(
             HttpMethod.Get,
-            $"expenses/{expenseId}/receipt-url?action=download");
+            $"expenses/{expenseId}/receipt-url?action={action}");
         using var response = await _http.SendAsync(request);
         var json = await response.Content.ReadAsStringAsync();
         await EnsureSuccessAsync(response, json);
 
         var result = JsonSerializer.Deserialize<ReceiptUrlResponse>(json, JsonOptions);
         if (string.IsNullOrEmpty(result?.PresignedUrl))
-            throw new InvalidOperationException("URL du reçu introuvable.");
+            throw new InvalidOperationException("URL présignée introuvable.");
 
         return result.PresignedUrl;
     }
@@ -109,7 +130,7 @@ public class ApiService
     {
         var request = new HttpRequestMessage(method, relativePath);
         if (!string.IsNullOrEmpty(_auth.IdToken))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _auth.IdToken);
+            request.Headers.TryAddWithoutValidation("Authorization", _auth.IdToken);
         return request;
     }
 
